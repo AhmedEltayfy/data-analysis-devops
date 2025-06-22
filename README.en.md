@@ -1,4 +1,5 @@
 🇸🇦 النسخة العربية متوفرة [هنا](README.md)
+![Joseph Empire Preview](assets/joseph-empire-preview.png)
 
 # 💰 Budget Analyzer | Streamlit-based Budget Analysis App 📊
 
