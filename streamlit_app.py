@@ -49,26 +49,34 @@ else:
 if page == "🏠 الصفحة الرئيسية":
     st.markdown("""
         <div style='text-align: center;'>
+
             <img src="assets/logo.png" width="120" />
 
             <h1>👋 أهلاً بك في تطبيق <span style='color:#4CAF50;'>Budget Analyzer</span></h1>
+
             <p style='font-size:18px;'>حلّل ميزانيتك، استخرج الرسوم، وصدّر النتائج — في أقل من دقيقة!</p>
 
             <a href="?page=📁+تحليل+البيانات">
                 <button style='padding:10px 20px; font-size:16px;'>ابدأ الآن 🚀</button>
             </a>
+
             <br><br>
 
             <a href="?mode=demo">
                 <button style='padding:8px 16px; font-size:14px; background-color:#555; color:#fff;'>عرض تقديمي (Demo Mode) 🎥</button>
             </a>
 
-            <p style="font-size:13px; color:#888; margin-top:20px;">
-                Developed by Ahmed El-tayfy | برمجة: أحمد الطايفي
-            </p>
         </div>
     """, unsafe_allow_html=True)
+
+    # ✅ التوقيع الاحترافي يظهر كعنصر مستقل خارج div لضمان ظهوره
+    st.markdown(
+        "<div style='text-align:center; font-size:13px; color:#888; margin-top:30px;'>"
+        "Developed by Ahmed El-tayfy</div>",
+        unsafe_allow_html=True
+    )
     st.stop()
+
 
 # ========== تحميل البيانات ==========
 if "use_demo_data" not in st.session_state:
