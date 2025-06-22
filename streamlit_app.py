@@ -1,10 +1,10 @@
+# بداية الكود الأصلي منك (بدون تغييرات هنا)
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import io
 from pandas.api.types import CategoricalDtype
 
-# دعم PDF بالعربية
 import arabic_reshaper
 from bidi.algorithm import get_display
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate
@@ -15,7 +15,6 @@ from reportlab.pdfbase import pdfmetrics
 import tempfile
 import os
 
-# إعداد الصفحة
 st.set_page_config(
     page_title="📊 تحليل الميزانية - Budget Analyzer",
     page_icon="assets/favicon.ico",
@@ -28,7 +27,6 @@ uploaded_file = None
 df = None
 is_demo_mode = st.query_params.get("mode") == "demo"
 
-# ========== الشريط الجانبي ==========
 if not is_demo_mode:
     st.sidebar.title("🔧 إعدادات التطبيق")
     uploaded_file = st.sidebar.file_uploader("⬆️ حمّل ملف الميزانية (CSV)", type="csv")
@@ -49,34 +47,18 @@ else:
 if page == "🏠 الصفحة الرئيسية":
     st.markdown("""
         <div style='text-align: center;'>
-
             <img src="assets/logo.png" width="120" />
-
             <h1>👋 أهلاً بك في تطبيق <span style='color:#4CAF50;'>Budget Analyzer</span></h1>
-
             <p style='font-size:18px;'>حلّل ميزانيتك، استخرج الرسوم، وصدّر النتائج — في أقل من دقيقة!</p>
-
             <a href="?page=📁+تحليل+البيانات">
                 <button style='padding:10px 20px; font-size:16px;'>ابدأ الآن 🚀</button>
             </a>
-
             <br><br>
-
             <a href="?mode=demo">
                 <button style='padding:8px 16px; font-size:14px; background-color:#555; color:#fff;'>عرض تقديمي (Demo Mode) 🎥</button>
             </a>
-
         </div>
     """, unsafe_allow_html=True)
-
-    # ✅ التوقيع الاحترافي يظهر كعنصر مستقل خارج div لضمان ظهوره
-    st.markdown(
-        "<div style='text-align:center; font-size:13px; color:#888; margin-top:30px;'>"
-        "Developed by Ahmed El-tayfy</div>",
-        unsafe_allow_html=True
-    )
-    st.stop()
-
 
 # ========== تحميل البيانات ==========
 if "use_demo_data" not in st.session_state:
@@ -103,17 +85,16 @@ elif st.session_state.use_demo_data:
     st.info("✅ تعمل الآن على بيانات تجريبية — يمكنك رفع ملفك الخاص في أي وقت.")
 else:
     st.warning("⚠️ لم يتم تحميل أو إنشاء بيانات بعد.")
-    st.stop()
 
 # ========== تحليل البيانات ==========
-if page == "📁 تحليل البيانات":
+if page == "📁 تحليل البيانات" and df is not None:
     st.subheader("📄 عرض البيانات:")
     st.dataframe(df)
     st.subheader("📊 ملخص إحصائي:")
     st.write(df.describe())
 
 # ========== الرسوم البيانية ==========
-elif page == "📈 الرسوم البيانية":
+elif page == "📈 الرسوم البيانية" and df is not None:
     numeric_cols = df.select_dtypes(include='number').columns
     if len(numeric_cols) >= 2:
         st.subheader("📈 رسم بياني تفاعلي")
@@ -139,7 +120,7 @@ elif page == "📈 الرسوم البيانية":
         st.info("📌 أضف عمودي 'Month' و 'Revenue' لتحليل النمو.")
 
 # ========== التصدير ==========
-elif page == "📤 التصدير":
+elif page == "📤 التصدير" and df is not None:
     st.subheader("📥 تنزيل البيانات")
 
     csv = df.to_csv(index=False).encode("utf-8")
@@ -176,7 +157,7 @@ elif page == "📤 التصدير":
             ('FONTSIZE', (0, 0), (-1, -1), 10),
             ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
             ('GRID', (0, 0), (-1, -1), 0.3, colors.black),
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f0f0f0")),
+            ('BACKGROUND', (0, 0), ( -1, 0), colors.HexColor("#f0f0f0")),
         ]))
 
         doc.build([table])
@@ -187,7 +168,8 @@ elif page == "📤 التصدير":
 
     pdf_bytes = dataframe_to_pdf(df)
     st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")
-# ========== التوقيع الموحد في أسفل كل صفحة ==========
+
+# ✅ التوقيع الموحد في الأسفل — يظهر في جميع الصفحات
 st.markdown(
     "<div style='text-align:center; font-size:13px; color:#888; margin-top:50px;'>"
     "Developed by Ahmed El-tayfy</div>",
