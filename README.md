@@ -14,6 +14,10 @@
 - اختبارات جودة البيانات باستخدام Pytest
 - تنفيذ آلي عبر GitHub Actions
 
+## 🌐 تجربة التطبيق مباشرة
+
+[🔎 افتح Budget Analyzer على Streamlit Cloud](https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app/)
+
 ---
 
 ## 🖥️ التشغيل المحلي
@@ -21,6 +25,7 @@
 ```bash
 git clone https://github.com/ahmedEltayfy/data-analysis-devops.git
 cd data-analysis-devops
+
 
 pip install -r requirements.txt
 
