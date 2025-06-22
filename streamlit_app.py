@@ -3,79 +3,56 @@ import pandas as pd
 import plotly.express as px
 import io
 from fpdf import FPDF
-def dataframe_to_pdf(df):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=10)
+from pandas.api.types import CategoricalDtype
 
-    col_width = 190 / len(df.columns)
-
-    # رؤوس الأعمدة
-    for col in df.columns:
-        pdf.cell(col_width, 10, str(col), border=1)
-    pdf.ln()
-
-    # البيانات
-    for i, row in df.iterrows():
-        for val in row:
-            pdf.cell(col_width, 10, str(val), border=1)
-        pdf.ln()
-
-    return pdf.output(dest="S").encode("latin1")
-
-# إعداد الواجهة
+# إعداد الصفحة
 st.set_page_config(
     page_title="📊 تحليل الميزانية - Budget Analyzer",
     page_icon="assets/favicon.ico",
     layout="wide"
 )
 
-
 st.title("💰 Budget Analyzer App")
 
-# الكشف عن وضع العرض التقديمي
+# تعريف مبكر لتفادي الأخطاء لاحقًا
+uploaded_file = None
+df = None
+
+# ========== عرض تقديمي أم لا ==========
 is_demo_mode = st.query_params.get("mode") == "demo"
 
-# ---------------------- الشريط الجانبي ----------------------
-
+# ========== الشريط الجانبي ==========
 if not is_demo_mode:
     st.sidebar.title("🔧 إعدادات التطبيق")
-
     uploaded_file = st.sidebar.file_uploader("⬆️ حمّل ملف الميزانية (CSV)", type="csv")
-
     page = st.sidebar.radio("📂 اختر الصفحة", [
         "🏠 الصفحة الرئيسية",
         "📁 تحليل البيانات",
         "📈 الرسوم البيانية",
         "📤 التصدير"
     ])
-
     st.sidebar.markdown("---")
-
     if st.sidebar.button("🧹 مسح البيانات الحالية وإعادة التشغيل"):
         st.session_state.clear()
         st.rerun()
 else:
     page = "📈 الرسوم البيانية"
 
-# ---------------------- الصفحة الترحيبية ----------------------
-
+# ========== الصفحة الترحيبية ==========
 if page == "🏠 الصفحة الرئيسية":
     st.markdown("""
         <div style='text-align: center;'>
+            <img src="assets/logo.png" width="120" />
             <h1>👋 أهلاً بك في تطبيق <span style='color:#4CAF50;'>Budget Analyzer</span></h1>
             <p style='font-size:18px;'>حلّل ميزانيتك، استخرج الرسوم، وصدّر النتائج — في أقل من دقيقة!</p>
-            <img src="https://media.giphy.com/media/3oEdv3Ul4nUtxmw5Qw/giphy.gif" width="400"/>
+            <a href="?page=📁+تحليل+البيانات"><button style='padding:10px 20px;'>ابدأ الآن 🚀</button></a>
             <br><br>
-            <a href="?page=📁+تحليل+البيانات"><button style='padding:10px 20px;font-size:16px;'>ابدأ الآن 🚀</button></a>
-            <br><br>
-            <a href="?mode=demo"><button style='padding:8px 16px;font-size:14px;background-color:#555;color:#fff;'>عرض تقديمي (Demo Mode) 🎥</button></a>
+            <a href="?mode=demo"><button style='padding:8px 16px;background-color:#555;color:#fff;'>عرض تقديمي (Demo Mode) 🎥</button></a>
         </div>
     """, unsafe_allow_html=True)
     st.stop()
 
-# ---------------------- إدارة البيانات ----------------------
-
+# ========== تحميل البيانات ==========
 if "use_demo_data" not in st.session_state:
     st.session_state.use_demo_data = True
 
@@ -88,13 +65,10 @@ if uploaded_file is not None:
     st.session_state["last_df"] = df
     st.success("📂 تم رفع الملف بنجاح!")
     st.session_state.use_demo_data = False
-
 elif "last_df" in st.session_state:
     df = st.session_state["last_df"]
     st.info("📦 جاري استخدام الملف المرفوع سابقًا")
-
 elif st.session_state.use_demo_data:
-    st.warning("⚠️ لم يتم رفع ملف — سيتم استخدام بيانات تجريبية.")
     df = pd.DataFrame({
         "Month": ["يناير", "فبراير", "مارس", "أبريل"],
         "Revenue": [12000, 14500, 16000, 13800],
@@ -102,12 +76,10 @@ elif st.session_state.use_demo_data:
     })
     st.info("✅ تعمل الآن على بيانات تجريبية — يمكنك رفع ملفك الخاص في أي وقت.")
 else:
-    st.info("⬅️ الرجاء رفع ملف CSV لبدء التحليل.")
+    st.warning("⚠️ لم يتم تحميل أو إنشاء بيانات بعد.")
     st.stop()
 
-
-# ---------------------- تحليل البيانات ----------------------
-
+# ========== تحليل البيانات ==========
 if page == "📁 تحليل البيانات":
     st.subheader("📄 عرض البيانات:")
     st.dataframe(df)
@@ -115,8 +87,7 @@ if page == "📁 تحليل البيانات":
     st.subheader("📊 ملخص إحصائي:")
     st.write(df.describe())
 
-# ---------------------- الرسوم البيانية ----------------------
-
+# ========== الرسوم البيانية ==========
 elif page == "📈 الرسوم البيانية":
     numeric_cols = df.select_dtypes(include='number').columns
 
@@ -125,24 +96,26 @@ elif page == "📈 الرسوم البيانية":
         x_axis = st.selectbox("اختر المحور X", numeric_cols)
         y_axis = st.selectbox("اختر المحور Y", numeric_cols, index=1)
         fig = px.bar(df, x=x_axis, y=y_axis, title=f"{y_axis} حسب {x_axis}")
-        fig.update_traces(marker_color='#4CAF50')  # لون مخصص
-        fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(255,255,255,0.95)')
+        fig.update_traces(marker_color='#4CAF50')
         st.plotly_chart(fig)
     else:
-        st.warning("⚠️ لا توجد أعمدة رقمية كافية للرسم البياني.")
+        st.warning("⚠️ لا توجد أعمدة رقمية كافية.")
 
-    st.subheader("📉 تحليل النمو الشهري")
-
+    # ترتيب الأشهر في حالة وجود تحليل شهري
     if "Month" in df.columns and "Revenue" in df.columns:
+        month_order = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+                       "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+        df["Month"] = df["Month"].astype(CategoricalDtype(categories=month_order, ordered=True))
         df_sorted = df.sort_values("Month")
         df_sorted["نمو الإيرادات (%)"] = df_sorted["Revenue"].pct_change().fillna(0) * 100
+
+        st.subheader("📉 تحليل النمو الشهري")
         st.line_chart(df_sorted.set_index("Month")[["Revenue", "نمو الإيرادات (%)"]])
         st.dataframe(df_sorted[["Month", "Revenue", "نمو الإيرادات (%)"]])
     else:
-        st.info("📌 أضف عمودي 'Month' و 'Revenue' لتحليل النمو الشهري.")
+        st.info("📌 أضف عمودي 'Month' و 'Revenue' لتحليل النمو.")
 
-# ---------------------- التصدير ----------------------
-
+# ========== التصدير ==========
 elif page == "📤 التصدير":
     st.subheader("📥 تنزيل البيانات")
 
@@ -152,10 +125,23 @@ elif page == "📤 التصدير":
     excel_buffer = io.BytesIO()
     with pd.ExcelWriter(excel_buffer, engine="xlsxwriter") as writer:
         df.to_excel(writer, index=False, sheet_name="Analysis")
-
-    excel_data = excel_buffer.getvalue()
-    st.download_button("📊 تحميل كـ Excel", excel_data, "analysis.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    st.download_button("📊 تحميل كـ Excel", excel_buffer.getvalue(), "analysis.xlsx")
 
     st.subheader("🧾 تقرير PDF")
+    
+    def dataframe_to_pdf(df):
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=10)
+        col_width = 190 / len(df.columns)
+        for col in df.columns:
+            pdf.cell(col_width, 10, str(col), border=1)
+        pdf.ln()
+        for _, row in df.iterrows():
+            for val in row:
+                pdf.cell(col_width, 10, str(val), border=1)
+            pdf.ln()
+        return pdf.output(dest="S").encode("latin1")
+
     pdf_bytes = dataframe_to_pdf(df)
     st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")
