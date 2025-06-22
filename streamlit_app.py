@@ -187,3 +187,9 @@ elif page == "📤 التصدير":
 
     pdf_bytes = dataframe_to_pdf(df)
     st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")
+# ========== التوقيع الموحد في أسفل كل صفحة ==========
+st.markdown(
+    "<div style='text-align:center; font-size:13px; color:#888; margin-top:50px;'>"
+    "Developed by Ahmed El-tayfy</div>",
+    unsafe_allow_html=True
+)
