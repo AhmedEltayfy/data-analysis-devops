@@ -2,13 +2,34 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import io
+from fpdf import FPDF
+def dataframe_to_pdf(df):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=10)
+
+    col_width = 190 / len(df.columns)
+
+    # رؤوس الأعمدة
+    for col in df.columns:
+        pdf.cell(col_width, 10, str(col), border=1)
+    pdf.ln()
+
+    # البيانات
+    for i, row in df.iterrows():
+        for val in row:
+            pdf.cell(col_width, 10, str(val), border=1)
+        pdf.ln()
+
+    return pdf.output(dest="S").encode("latin1")
 
 # إعداد الواجهة
 st.set_page_config(
     page_title="📊 تحليل الميزانية - Budget Analyzer",
-    page_icon="💰",
+    page_icon="assets/favicon.ico",
     layout="wide"
 )
+
 
 st.title("💰 Budget Analyzer App")
 
@@ -58,12 +79,7 @@ if page == "🏠 الصفحة الرئيسية":
 if "use_demo_data" not in st.session_state:
     st.session_state.use_demo_data = True
 
-uploaded_file = None if is_demo_mode else st.session_state.get("uploaded_file")
-
 if not is_demo_mode:
-    if "uploaded_file" not in st.session_state and 'file_uploader' in st.session_state:
-        uploaded_file = st.session_state["file_uploader"]
-
     if uploaded_file is None and st.button("🔁 جرّب البيانات التجريبية من جديد"):
         st.session_state.use_demo_data = True
 
@@ -88,6 +104,7 @@ elif st.session_state.use_demo_data:
 else:
     st.info("⬅️ الرجاء رفع ملف CSV لبدء التحليل.")
     st.stop()
+
 
 # ---------------------- تحليل البيانات ----------------------
 
@@ -138,3 +155,7 @@ elif page == "📤 التصدير":
 
     excel_data = excel_buffer.getvalue()
     st.download_button("📊 تحميل كـ Excel", excel_data, "analysis.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+    st.subheader("🧾 تقرير PDF")
+    pdf_bytes = dataframe_to_pdf(df)
+    st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")

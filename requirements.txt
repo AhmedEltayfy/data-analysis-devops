@@ -4,4 +4,5 @@ matplotlib
 streamlit
 plotly
 xlsxwriter
+fpdf
 pytest
