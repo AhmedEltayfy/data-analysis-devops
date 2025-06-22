@@ -7,3 +7,6 @@ xlsxwriter
 fpdf
 pytest
 reportlab
+arabic-reshaper
+python-bidi
+

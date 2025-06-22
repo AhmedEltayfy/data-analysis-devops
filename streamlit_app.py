@@ -4,12 +4,14 @@ import plotly.express as px
 import io
 from pandas.api.types import CategoricalDtype
 
+# دعم PDF بالعربية
+import arabic_reshaper
+from bidi.algorithm import get_display
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
-
 import tempfile
 import os
 
@@ -22,11 +24,8 @@ st.set_page_config(
 
 st.title("💰 Budget Analyzer App")
 
-# تعريف مبدئي
 uploaded_file = None
 df = None
-
-# ========== العرض التقديمي ==========
 is_demo_mode = st.query_params.get("mode") == "demo"
 
 # ========== الشريط الجانبي ==========
@@ -91,14 +90,12 @@ else:
 if page == "📁 تحليل البيانات":
     st.subheader("📄 عرض البيانات:")
     st.dataframe(df)
-
     st.subheader("📊 ملخص إحصائي:")
     st.write(df.describe())
 
 # ========== الرسوم البيانية ==========
 elif page == "📈 الرسوم البيانية":
     numeric_cols = df.select_dtypes(include='number').columns
-
     if len(numeric_cols) >= 2:
         st.subheader("📈 رسم بياني تفاعلي")
         x_axis = st.selectbox("اختر المحور X", numeric_cols)
@@ -134,24 +131,34 @@ elif page == "📤 التصدير":
         df.to_excel(writer, index=False, sheet_name="Analysis")
     st.download_button("📊 تحميل كـ Excel", excel_buffer.getvalue(), "analysis.xlsx")
 
-    st.subheader("🧾 تقرير PDF (يدعم العربية)")
+    st.subheader("🧾 تقرير PDF (بدعم كامل للعربية)")
 
+    # ✅ الدالة الجديدة المتكاملة:
     def dataframe_to_pdf(df):
-        # تحميل الخط العربي
         font_path = "assets/NotoNaskhArabic-Regular.ttf"
         pdfmetrics.registerFont(TTFont("Arabic", font_path))
 
+        def reshape_arabic(text):
+            try:
+                reshaped = arabic_reshaper.reshape(str(text))
+                return get_display(reshaped)
+            except:
+                return str(text)
+
+        table_data = [[reshape_arabic(col) for col in df.columns]]
+        for _, row in df.iterrows():
+            table_data.append([reshape_arabic(cell) for cell in row])
+
         tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         doc = SimpleDocTemplate(tmp_file.name, pagesize=A4, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
-        data = [list(df.columns)] + df.astype(str).values.tolist()
 
-        table = Table(data)
+        table = Table(table_data, hAlign='CENTER')
         table.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (-1, -1), 'Arabic'),
             ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+            ('GRID', (0, 0), (-1, -1), 0.3, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f0f0f0")),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
         ]))
 
         doc.build([table])
