@@ -2,8 +2,16 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import io
-from fpdf import FPDF
 from pandas.api.types import CategoricalDtype
+
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
+import tempfile
+import os
 
 # إعداد الصفحة
 st.set_page_config(
@@ -14,11 +22,11 @@ st.set_page_config(
 
 st.title("💰 Budget Analyzer App")
 
-# تعريف مبكر لتفادي الأخطاء لاحقًا
+# تعريف مبدئي
 uploaded_file = None
 df = None
 
-# ========== عرض تقديمي أم لا ==========
+# ========== العرض التقديمي ==========
 is_demo_mode = st.query_params.get("mode") == "demo"
 
 # ========== الشريط الجانبي ==========
@@ -38,7 +46,7 @@ if not is_demo_mode:
 else:
     page = "📈 الرسوم البيانية"
 
-# ========== الصفحة الترحيبية ==========
+# ========== الصفحة الرئيسية ==========
 if page == "🏠 الصفحة الرئيسية":
     st.markdown("""
         <div style='text-align: center;'>
@@ -101,7 +109,6 @@ elif page == "📈 الرسوم البيانية":
     else:
         st.warning("⚠️ لا توجد أعمدة رقمية كافية.")
 
-    # ترتيب الأشهر في حالة وجود تحليل شهري
     if "Month" in df.columns and "Revenue" in df.columns:
         month_order = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
                        "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
@@ -127,21 +134,31 @@ elif page == "📤 التصدير":
         df.to_excel(writer, index=False, sheet_name="Analysis")
     st.download_button("📊 تحميل كـ Excel", excel_buffer.getvalue(), "analysis.xlsx")
 
-    st.subheader("🧾 تقرير PDF")
-    
+    st.subheader("🧾 تقرير PDF (يدعم العربية)")
+
     def dataframe_to_pdf(df):
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=10)
-        col_width = 190 / len(df.columns)
-        for col in df.columns:
-            pdf.cell(col_width, 10, str(col), border=1)
-        pdf.ln()
-        for _, row in df.iterrows():
-            for val in row:
-                pdf.cell(col_width, 10, str(val), border=1)
-            pdf.ln()
-        return pdf.output(dest="S").encode("latin1")
+        # تحميل الخط العربي
+        font_path = "assets/NotoNaskhArabic-Regular.ttf"
+        pdfmetrics.registerFont(TTFont("Arabic", font_path))
+
+        tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+        doc = SimpleDocTemplate(tmp_file.name, pagesize=A4, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+        data = [list(df.columns)] + df.astype(str).values.tolist()
+
+        table = Table(data)
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), 'Arabic'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f0f0f0")),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+        ]))
+
+        doc.build([table])
+        with open(tmp_file.name, "rb") as f:
+            pdf_data = f.read()
+        os.unlink(tmp_file.name)
+        return pdf_data
 
     pdf_bytes = dataframe_to_pdf(df)
     st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")
