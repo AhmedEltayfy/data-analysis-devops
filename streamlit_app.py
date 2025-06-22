@@ -172,6 +172,7 @@ elif page == "📤 التصدير" and df is not None:
 # ✅ التوقيع الموحد في الأسفل — يظهر في جميع الصفحات
 st.markdown(
     "<div style='text-align:center; font-size:13px; color:#888; margin-top:50px;'>"
-    "Developed by Ahmed El-tayfy</div>",
+    "💻 <strong>Developed by</strong> | <strong>Ahmed El-tayfy</strong></div>",
     unsafe_allow_html=True
 )
+
