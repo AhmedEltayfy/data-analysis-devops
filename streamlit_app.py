@@ -3,33 +3,42 @@ import pandas as pd
 import plotly.express as px
 import io
 
-# إعداد الصفحة
+# إعداد الواجهة
 st.set_page_config(
     page_title="📊 تحليل الميزانية - Budget Analyzer",
     page_icon="💰",
     layout="wide"
 )
+
 st.title("💰 Budget Analyzer App")
 
-# ------------------ الشريط الجانبي ------------------
-st.sidebar.title("🔧 إعدادات التطبيق")
+# الكشف عن وضع العرض التقديمي
+is_demo_mode = st.query_params.get("mode") == "demo"
 
-uploaded_file = st.sidebar.file_uploader("⬆️ حمّل ملف الميزانية (CSV)", type="csv")
+# ---------------------- الشريط الجانبي ----------------------
 
-page = st.sidebar.radio("📂 اختر الصفحة", [
-    "🏠 الصفحة الرئيسية",
-    "📁 تحليل البيانات",
-    "📈 الرسوم البيانية",
-    "📤 التصدير"
-])
+if not is_demo_mode:
+    st.sidebar.title("🔧 إعدادات التطبيق")
 
-st.sidebar.markdown("---")
+    uploaded_file = st.sidebar.file_uploader("⬆️ حمّل ملف الميزانية (CSV)", type="csv")
 
-if st.sidebar.button("🧹 مسح البيانات الحالية وإعادة التشغيل"):
-    st.session_state.clear()
-    st.rerun()
+    page = st.sidebar.radio("📂 اختر الصفحة", [
+        "🏠 الصفحة الرئيسية",
+        "📁 تحليل البيانات",
+        "📈 الرسوم البيانية",
+        "📤 التصدير"
+    ])
 
-# ------------------ الصفحة الترحيبية ------------------
+    st.sidebar.markdown("---")
+
+    if st.sidebar.button("🧹 مسح البيانات الحالية وإعادة التشغيل"):
+        st.session_state.clear()
+        st.rerun()
+else:
+    page = "📈 الرسوم البيانية"
+
+# ---------------------- الصفحة الترحيبية ----------------------
+
 if page == "🏠 الصفحة الرئيسية":
     st.markdown("""
         <div style='text-align: center;'>
@@ -38,21 +47,35 @@ if page == "🏠 الصفحة الرئيسية":
             <img src="https://media.giphy.com/media/3oEdv3Ul4nUtxmw5Qw/giphy.gif" width="400"/>
             <br><br>
             <a href="?page=📁+تحليل+البيانات"><button style='padding:10px 20px;font-size:16px;'>ابدأ الآن 🚀</button></a>
+            <br><br>
+            <a href="?mode=demo"><button style='padding:8px 16px;font-size:14px;background-color:#555;color:#fff;'>عرض تقديمي (Demo Mode) 🎥</button></a>
         </div>
     """, unsafe_allow_html=True)
     st.stop()
 
-# ------------------ تحميل البيانات أو إنشاء التجريبية ------------------
+# ---------------------- إدارة البيانات ----------------------
+
 if "use_demo_data" not in st.session_state:
     st.session_state.use_demo_data = True
 
-if uploaded_file is None and st.button("🔁 جرّب البيانات التجريبية من جديد"):
-    st.session_state.use_demo_data = True
+uploaded_file = None if is_demo_mode else st.session_state.get("uploaded_file")
+
+if not is_demo_mode:
+    if "uploaded_file" not in st.session_state and 'file_uploader' in st.session_state:
+        uploaded_file = st.session_state["file_uploader"]
+
+    if uploaded_file is None and st.button("🔁 جرّب البيانات التجريبية من جديد"):
+        st.session_state.use_demo_data = True
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
+    st.session_state["last_df"] = df
     st.success("📂 تم رفع الملف بنجاح!")
     st.session_state.use_demo_data = False
+
+elif "last_df" in st.session_state:
+    df = st.session_state["last_df"]
+    st.info("📦 جاري استخدام الملف المرفوع سابقًا")
 
 elif st.session_state.use_demo_data:
     st.warning("⚠️ لم يتم رفع ملف — سيتم استخدام بيانات تجريبية.")
@@ -62,12 +85,12 @@ elif st.session_state.use_demo_data:
         "Expenses": [7000, 8500, 9000, 7800]
     })
     st.info("✅ تعمل الآن على بيانات تجريبية — يمكنك رفع ملفك الخاص في أي وقت.")
-
 else:
     st.info("⬅️ الرجاء رفع ملف CSV لبدء التحليل.")
     st.stop()
 
-# ------------------ تحليل البيانات ------------------
+# ---------------------- تحليل البيانات ----------------------
+
 if page == "📁 تحليل البيانات":
     st.subheader("📄 عرض البيانات:")
     st.dataframe(df)
@@ -75,7 +98,8 @@ if page == "📁 تحليل البيانات":
     st.subheader("📊 ملخص إحصائي:")
     st.write(df.describe())
 
-# ------------------ الرسوم البيانية ------------------
+# ---------------------- الرسوم البيانية ----------------------
+
 elif page == "📈 الرسوم البيانية":
     numeric_cols = df.select_dtypes(include='number').columns
 
@@ -84,11 +108,14 @@ elif page == "📈 الرسوم البيانية":
         x_axis = st.selectbox("اختر المحور X", numeric_cols)
         y_axis = st.selectbox("اختر المحور Y", numeric_cols, index=1)
         fig = px.bar(df, x=x_axis, y=y_axis, title=f"{y_axis} حسب {x_axis}")
+        fig.update_traces(marker_color='#4CAF50')  # لون مخصص
+        fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(255,255,255,0.95)')
         st.plotly_chart(fig)
     else:
         st.warning("⚠️ لا توجد أعمدة رقمية كافية للرسم البياني.")
 
     st.subheader("📉 تحليل النمو الشهري")
+
     if "Month" in df.columns and "Revenue" in df.columns:
         df_sorted = df.sort_values("Month")
         df_sorted["نمو الإيرادات (%)"] = df_sorted["Revenue"].pct_change().fillna(0) * 100
@@ -97,7 +124,8 @@ elif page == "📈 الرسوم البيانية":
     else:
         st.info("📌 أضف عمودي 'Month' و 'Revenue' لتحليل النمو الشهري.")
 
-# ------------------ التصدير ------------------
+# ---------------------- التصدير ----------------------
+
 elif page == "📤 التصدير":
     st.subheader("📥 تنزيل البيانات")
 
