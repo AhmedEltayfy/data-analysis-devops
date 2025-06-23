@@ -1,4 +1,5 @@
 🇬🇧 English version available [here](README.en.md)
+![Joseph Empire Preview](assets/joseph-empire-preview.png)
 
 # 💰 Budget Analyzer | تحليل الميزانية 📊
 
@@ -43,3 +44,8 @@ git clone https://github.com/AhmedEltayfy/data-analysis-devops.git
 cd data-analysis-devops
 pip install -r requirements.txt
 streamlit run streamlit_app.py
+
+## 📘 وثائق المشروع
+
+- 📄 [عرض التوثيق الكامل (Markdown)](docs/BudgetAnalyzer_Documentation_AhmedELTayfy.md)
+- 🧾 [تحميل التوثيق كـ PDF](assets/BudgetAnalyzer_Documentation_AhmedELTayfy.pdf)
