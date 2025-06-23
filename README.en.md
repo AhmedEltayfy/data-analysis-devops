@@ -1,9 +1,13 @@
-🇸🇦 النسخة العربية متوفرة [هنا](README.md)
-![Joseph Empire Preview](assets/joseph-empire-preview.png)
+🇸🇦 Arabic version available [here](README.md)  
+![Joseph Empire Preview](assets/joseph-empire-preview.png)  
+[![Docs](https://img.shields.io/badge/docs-PDF-blue)](assets/BudgetAnalyzer_Documentation_AhmedElTayfy.pdf) 
+[![Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app)
+
+📚 [View documentation on GitHub Wiki](../../wiki)
 
 # 💰 Budget Analyzer | Streamlit-based Budget Analysis App 📊
 
-An interactive Streamlit application to analyze financial data quickly and intuitively — ideal for personal use, demos, or small business reporting.
+An interactive Streamlit application that helps you analyze your budget quickly and professionally — ideal for personal finance, demos, or small business reporting.
 
 ---
 
@@ -11,22 +15,22 @@ An interactive Streamlit application to analyze financial data quickly and intui
 
 [🔗 Launch the App](https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app)
 
-🎥 For a lightweight viewer experience:  
-[🧪 Demo Mode](https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app/?mode=demo)
+📎 For a presentation-friendly layout:  
+[🎥 Demo Mode](https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app/?mode=demo)
 
 ---
 
 ## 🧩 Key Features
 
-- 📂 Upload and analyze CSV files instantly
-- 🧪 Use built-in sample data when no file is uploaded
-- 🖼️ Clean welcome page with logo and launch options
-- 🔁 Quick access to demo data from the sidebar
-- 🧹 Session reset button to clear uploaded/temporary data
-- 📈 Interactive charts with Plotly and custom colors
-- 💾 Export results as CSV or Excel
-- 🧾 Generate a PDF report directly from the dataframe
-- 🎥 "Demo Mode" for presentation without the sidebar
+- 📂 Instantly analyze uploaded CSV files  
+- 🧪 Built-in sample data if no file is uploaded  
+- 🖼️ Elegant welcome screen with app overview and logo  
+- 🔁 Demo data button for quick testing  
+- 🧹 Session reset without page reload  
+- 📈 Interactive charts with Plotly and custom color schemes  
+- 💾 Export results as CSV or Excel  
+- 🧾 PDF report generation with Arabic support  
+- 🎥 Presentation Mode that hides the sidebar  
 
 ---
 
@@ -36,7 +40,7 @@ An interactive Streamlit application to analyze financial data quickly and intui
 
 ---
 
-## 🛠️ Run the App Locally
+## 🛠️ Run Locally
 
 ```bash
 git clone https://github.com/AhmedEltayfy/data-analysis-devops.git
