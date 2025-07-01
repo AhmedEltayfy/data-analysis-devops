@@ -9,5 +9,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=$PORT", "--server.enableCORS=false"]
-
+CMD streamlit run streamlit_app.py --server.port=$PORT --server.enableCORS=false
