@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: budget-analyzer-app
+    env: docker
+    plan: free
+    repo: https://github.com/AhmedEltayfy/data-analysis-devops
+    branch: main
+    buildCommand: |
+      pip install -r requirements.txt
+      pytest test_data_validation.py
+    startCommand: streamlit run streamlit_app.py --server.port=$PORT --server.enableCORS=false
+    autoDeploy: true
