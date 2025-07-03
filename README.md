@@ -6,7 +6,7 @@
 📚 [عرض التوثيق على GitHub Wiki](../../wiki)
 
 # 💰 Budget Analyzer | تحليل الميزانية 📊
-
+![CI Status](https://github.com/AhmedEltayfy/data-analysis-devops/actions/workflows/devops-ci.yml/badge.svg)
 تطبيق تفاعلي باستخدام Streamlit يساعدك على تحليل ميزانيتك بطريقة احترافية وسريعة.
 
 ---
