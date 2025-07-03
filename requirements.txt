@@ -9,4 +9,4 @@ pytest
 reportlab
 arabic-reshaper
 python-bidi
-
+flake8
