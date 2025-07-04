@@ -20,4 +20,3 @@ def test_amount_is_numeric():
 def test_no_missing_values():
     df = load_data("test_data/sample_budget.csv")
     assert not df.isnull().values.any()
-    
