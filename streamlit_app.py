@@ -104,8 +104,7 @@ elif page == "📈 الرسوم البيانية" and df is not None:
             x=x_axis,
             y=y_axis,
             title=f"{y_axis} حسب {x_axis}"
-)
-        
+        )
         fig.update_traces(marker_color='#4CAF50')
         st.plotly_chart(fig)
     else:
@@ -185,7 +184,7 @@ elif page == "📤 التصدير" and df is not None:
     pdf_bytes = dataframe_to_pdf(df)
     st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")
 
-# ✅ التوقيع الموحد في الأسفل — يظهر في جميع الصفحات
+# ✅ التوقيع الموحد
 st.markdown(
     "<div style='text-align:center; font-size:13px; color:#888; margin-top:50px;'>"
     "💻 <strong>Developed by</strong> | <strong>Ahmed El-tayfy</strong></div>",
