@@ -105,8 +105,8 @@ elif page == "📈 الرسوم البيانية" and df is not None:
             df,
             x=x_axis,
             y=y_axis,
-            title=f"{y_axis} حسب {x_axis}") 
-
+            title=f"{y_axis} حسب {x_axis}"
+        )
         fig.update_traces(marker_color='#4CAF50')
         st.plotly_chart(fig)
     else:
