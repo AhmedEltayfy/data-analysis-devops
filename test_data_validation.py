@@ -1,5 +1,4 @@
 import pandas as pd
-import pytest
 
 
 def load_data(file_path):
