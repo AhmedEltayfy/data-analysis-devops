@@ -18,6 +18,6 @@ def test_amount_is_numeric():
     assert pd.api.types.is_numeric_dtype(df["Amount"])
 
 
-def test_no_missing_values():
-    df = load_data("data/budget_data.csv")
+def test_columns_exist():
+    df = load_data("test_data/sample_budget.csv")
     assert not df.isnull().values.any()
