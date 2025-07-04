@@ -1,4 +1,3 @@
-# بداية الكود الأصلي منك (بدون تغييرات هنا)
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -100,16 +99,25 @@ elif page == "📈 الرسوم البيانية" and df is not None:
         st.subheader("📈 رسم بياني تفاعلي")
         x_axis = st.selectbox("اختر المحور X", numeric_cols)
         y_axis = st.selectbox("اختر المحور Y", numeric_cols, index=1)
-        fig = px.bar(df, x=x_axis, y=y_axis, title=f"{y_axis} حسب {x_axis}")
+        fig = px.bar(
+            df,
+            x=x_axis,
+            y=y_axis,
+            title=f"{y_axis} حسب {x_axis}"
+        )
         fig.update_traces(marker_color='#4CAF50')
         st.plotly_chart(fig)
     else:
         st.warning("⚠️ لا توجد أعمدة رقمية كافية.")
 
     if "Month" in df.columns and "Revenue" in df.columns:
-        month_order = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-                       "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
-        df["Month"] = df["Month"].astype(CategoricalDtype(categories=month_order, ordered=True))
+        month_order = [
+            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+        ]
+        df["Month"] = df["Month"].astype(
+            CategoricalDtype(categories=month_order, ordered=True)
+        )
         df_sorted = df.sort_values("Month")
         df_sorted["نمو الإيرادات (%)"] = df_sorted["Revenue"].pct_change().fillna(0) * 100
 
@@ -141,7 +149,7 @@ elif page == "📤 التصدير" and df is not None:
             try:
                 reshaped = arabic_reshaper.reshape(str(text))
                 return get_display(reshaped)
-            except:
+            except Exception:
                 return str(text)
 
         table_data = [[reshape_arabic(col) for col in df.columns]]
@@ -149,7 +157,14 @@ elif page == "📤 التصدير" and df is not None:
             table_data.append([reshape_arabic(cell) for cell in row])
 
         tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-        doc = SimpleDocTemplate(tmp_file.name, pagesize=A4, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+        doc = SimpleDocTemplate(
+            tmp_file.name,
+            pagesize=A4,
+            rightMargin=30,
+            leftMargin=30,
+            topMargin=30,
+            bottomMargin=18
+        )
 
         table = Table(table_data, hAlign='CENTER')
         table.setStyle(TableStyle([
@@ -157,7 +172,7 @@ elif page == "📤 التصدير" and df is not None:
             ('FONTSIZE', (0, 0), (-1, -1), 10),
             ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
             ('GRID', (0, 0), (-1, -1), 0.3, colors.black),
-            ('BACKGROUND', (0, 0), ( -1, 0), colors.HexColor("#f0f0f0")),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f0f0f0")),
         ]))
 
         doc.build([table])
@@ -175,4 +190,3 @@ st.markdown(
     "💻 <strong>Developed by</strong> | <strong>Ahmed El-tayfy</strong></div>",
     unsafe_allow_html=True
 )
-
