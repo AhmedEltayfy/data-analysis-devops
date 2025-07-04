@@ -1,16 +1,23 @@
 import pandas as pd
 import pytest
 
-# تحميل البيانات
-@pytest.fixture
-def load_data():
-    return pd.read_csv("balance_sheet_mar.csv")
 
-# اختبار خلوّ البيانات من القيم الفارغة
-def test_no_missing_values(load_data):
-    assert load_data.isnull().sum().sum() == 0, "⚠️ البيانات تحتوي على قيم فارغة!"
+def load_data(file_path):
+    return pd.read_csv(file_path)
 
-# اختبار أن جميع القيم رقمية
-def test_data_types(load_data):
-    numeric_types = ['int64', 'float64']
-    assert all(load_data.dtypes.isin(numeric_types)), "⚠️ هناك أعمدة غير رقمية!"
+
+def test_columns_exist():
+    df = load_data("data/budget_data.csv")
+    expected_columns = ["Date", "Category", "Amount", "Description"]
+    for col in expected_columns:
+        assert col in df.columns
+
+
+def test_amount_is_numeric():
+    df = load_data("data/budget_data.csv")
+    assert pd.api.types.is_numeric_dtype(df["Amount"])
+
+
+def test_no_missing_values():
+    df = load_data("data/budget_data.csv")
+    assert not df.isnull().values.any()
