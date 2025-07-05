@@ -1,12 +1,26 @@
-🇬🇧 English version available [here](README.en.md)  
-![Joseph Empire Preview](assets/joseph-empire-preview.png)  
-[![Docs](https://img.shields.io/badge/docs-PDF-blue)](assets/BudgetAnalyzer_Documentation_AhmedELTayfy.pdf)  
-[![Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app)
+<!-- 🌐 اللغة -->
+🇬🇧 English version available [here](README.en.md)
+
+<!-- 🖼️ شعار المشروع -->
+![Joseph Empire Preview](assets/joseph-empire-preview.png)
+
+<!-- 🎯 الشارات -->
+<p align="center">
+  <a href="https://github.com/AhmedEltayfy/data-analysis-devops/actions">
+    <img alt="CI" src="https://github.com/AhmedEltayfy/data-analysis-devops/actions/workflows/devops-ci.yml/badge.svg">
+  </a>
+  <a href="assets/BudgetAnalyzer_Documentation_AhmedELTayfy.pdf">
+    <img alt="Docs" src="https://img.shields.io/badge/docs-PDF-blue">
+  </a>
+  <a href="https://data-analysis-devops-ajjiwigrbjayb86vtzed6e.streamlit.app">
+    <img alt="Streamlit" src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg">
+  </a>
+</p>
 
 📚 [عرض التوثيق على GitHub Wiki](../../wiki)
 
 # 💰 Budget Analyzer | تحليل الميزانية 📊
-![CI Status](https://github.com/AhmedEltayfy/data-analysis-devops/actions/workflows/devops-ci.yml/badge.svg)
+
 تطبيق تفاعلي باستخدام Streamlit يساعدك على تحليل ميزانيتك بطريقة احترافية وسريعة.
 
 ---
