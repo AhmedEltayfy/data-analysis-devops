@@ -18,6 +18,7 @@
 </p>
 
 📚 [عرض التوثيق على GitHub Wiki](../../wiki)
+📦 [نشر التطبيق على Render](https://github.com/AhmedEltayfy/data-analysis-devops/wiki/🔧-نشر-التطبيق-على-Render)
 
 # 💰 Budget Analyzer | تحليل الميزانية 📊
 
