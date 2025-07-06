@@ -86,13 +86,9 @@ elif st.session_state.use_demo_data:
             "Expenses": [7000, 8500, 9000, 7800],
         }
     )
-    st.info("✅ تعمل الآن على بيانات تجريبية" \
-    " — يمكنك رفع ملفك الخاص في أي وقت."
-    )
+    st.info("✅ تعمل الآن على بيانات تجريبية" " — يمكنك رفع ملفك الخاص في أي وقت.")
 else:
-    st.warning("⚠️ لم يتم تحميل" \
-    " أو إنشاء بيانات بعد."
-    )
+    st.warning("⚠️ لم يتم تحميل" " أو إنشاء بيانات بعد.")
 # ========== تحليل البيانات ==========
 if page == "📁 تحليل البيانات" and df is not None:
     st.subheader("📄 عرض البيانات:")
@@ -106,12 +102,8 @@ elif page == "📈 الرسوم البيانية" and df is not None:
     if len(numeric_cols) >= 2:
         st.subheader("📈 رسم بياني تفاعلي")
         x_axis = st.selectbox("اختر المحور X", numeric_cols)
-        y_axis = st.selectbox("اختر المحور Y",
-                               numeric_cols, index=1
-        )
-        fig = px.bar(df, x=x_axis, y=y_axis,
-                      title=f"{y_axis} حسب {x_axis}"
-        )
+        y_axis = st.selectbox("اختر المحور Y", numeric_cols, index=1)
+        fig = px.bar(df, x=x_axis, y=y_axis, title=f"{y_axis} حسب {x_axis}")
         fig.update_traces(marker_color="#4CAF50")
         st.plotly_chart(fig)
     else:
@@ -132,8 +124,8 @@ elif page == "📈 الرسوم البيانية" and df is not None:
             "نوفمبر",
             "ديسمبر",
         ]
-        df["Month"] = df["Month"].astype(
-            CategoricalDtype(categories=month_order, ordered=True)
+        df["Month"] = df["Month"].astype(CategoricalDtype(
+            categories=month_order, ordered=True)
         )
         df_sorted = df.sort_values("Month")
         df_sorted["نمو الإيرادات (%)"] = (
