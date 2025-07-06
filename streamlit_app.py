@@ -47,7 +47,7 @@ if page == "🏠 الصفحة الرئيسية":
         <div style='text-align: center;'>
             <img src="assets/logo.png" width="120" />
             <h1>
-            👋 أهلاً بك في تطبيق 
+            👋 أهلاً بك في تطبيق
                  <span style='color:#4CAF50;'>Budget Analyzer</span>
             </h1>
             <p style='font-size:18px;'>
