@@ -12,7 +12,6 @@ file_paths = [
 ]
 
 
-
 # خطوة 1: التحقق من تنسيق الملف وتحميله
 def load_and_validate(path):
     try:
@@ -24,12 +23,12 @@ def load_and_validate(path):
         return None
 
 
-
 # خطوة 2: إجراء تحليل بسيط على العمود المستهدف
 def analyze(df):
     revenue_mean = df["Revenue"].mean()
     print(f"✅ متوسط الإيرادات: {revenue_mean:.2f}")
     return revenue_mean
+
 
 # خطوة 3: محاكاة إرسال النتيجة (مثلاً إلى API أو حفظها)
 def ship_output(result, file_id):
@@ -46,4 +45,3 @@ for path in file_paths:
 
     result = analyze(df)
     ship_output(result, os.path.basename(path))
-    
