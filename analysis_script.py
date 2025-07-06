@@ -8,6 +8,7 @@ data_dir = Path("dat/")
 # الحصول على جميع ملفات CSV داخل المجلد
 file_paths = list(data_dir.glob("*.csv"))
 
+
 # وظيفة 1: تحميل البيانات والتحقق من صحتها
 def load_and_validate(path):
     try:
@@ -19,11 +20,13 @@ def load_and_validate(path):
         print(f"❌ خطأ في الملف {path}: {e}")
         return None
 
+
 # وظيفة 2: تحليل الإيرادات
 def analyze(df):
     revenue_mean = df["Revenue"].mean()
     print(f"📊 متوسط الإيرادات: {revenue_mean:.2f}")
     return revenue_mean
+
 
 # وظيفة 3: إرسال النتيجة (محاكاة للنشر)
 def ship_output(result, file_id):
