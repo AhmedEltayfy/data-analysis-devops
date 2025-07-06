@@ -17,7 +17,7 @@ import os
 st.set_page_config(
     page_title="📊 تحليل الميزانية - Budget Analyzer",
     page_icon="assets/favicon.ico",
-    layout="wide"
+    layout="wide",
 )
 
 st.title("💰 Budget Analyzer App")
@@ -29,12 +29,10 @@ is_demo_mode = st.query_params.get("mode") == "demo"
 if not is_demo_mode:
     st.sidebar.title("🔧 إعدادات التطبيق")
     uploaded_file = st.sidebar.file_uploader("⬆️ حمّل ملف الميزانية (CSV)", type="csv")
-    page = st.sidebar.radio("📂 اختر الصفحة", [
-        "🏠 الصفحة الرئيسية",
-        "📁 تحليل البيانات",
-        "📈 الرسوم البيانية",
-        "📤 التصدير"
-    ])
+    page = st.sidebar.radio(
+        "📂 اختر الصفحة",
+        ["🏠 الصفحة الرئيسية", "📁 تحليل البيانات", "📈 الرسوم البيانية", "📤 التصدير"],
+    )
     st.sidebar.markdown("---")
     if st.sidebar.button("🧹 مسح البيانات الحالية وإعادة التشغيل"):
         st.session_state.clear()
@@ -44,7 +42,8 @@ else:
 
 # ========== الصفحة الرئيسية ==========
 if page == "🏠 الصفحة الرئيسية":
-    st.markdown("""
+    st.markdown(
+        """
         <div style='text-align: center;'>
             <img src="assets/logo.png" width="120" />
             <h1>👋 أهلاً بك في تطبيق <span style='color:#4CAF50;'>Budget Analyzer</span></h1>
@@ -59,7 +58,9 @@ if page == "🏠 الصفحة الرئيسية":
                 '>عرض تقديمي (Demo Mode) 🎥</button>
             </a>
         </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 # ========== تحميل البيانات ==========
 if "use_demo_data" not in st.session_state:
@@ -78,15 +79,16 @@ elif "last_df" in st.session_state:
     df = st.session_state["last_df"]
     st.info("📦 جاري استخدام الملف المرفوع سابقًا")
 elif st.session_state.use_demo_data:
-    df = pd.DataFrame({
-        "Month": ["يناير", "فبراير", "مارس", "أبريل"],
-        "Revenue": [12000, 14500, 16000, 13800],
-        "Expenses": [7000, 8500, 9000, 7800]
-    })
+    df = pd.DataFrame(
+        {
+            "Month": ["يناير", "فبراير", "مارس", "أبريل"],
+            "Revenue": [12000, 14500, 16000, 13800],
+            "Expenses": [7000, 8500, 9000, 7800],
+        }
+    )
     st.info("✅ تعمل الآن على بيانات تجريبية — يمكنك رفع ملفك الخاص في أي وقت.")
 else:
     st.warning("⚠️ لم يتم تحميل أو إنشاء بيانات بعد.")
-
 # ========== تحليل البيانات ==========
 if page == "📁 تحليل البيانات" and df is not None:
     st.subheader("📄 عرض البيانات:")
@@ -96,32 +98,40 @@ if page == "📁 تحليل البيانات" and df is not None:
 
 # ========== الرسوم البيانية ==========
 elif page == "📈 الرسوم البيانية" and df is not None:
-    numeric_cols = df.select_dtypes(include='number').columns
+    numeric_cols = df.select_dtypes(include="number").columns
     if len(numeric_cols) >= 2:
         st.subheader("📈 رسم بياني تفاعلي")
         x_axis = st.selectbox("اختر المحور X", numeric_cols)
-        y_axis = st.selectbox("اختر المحور Y", numeric_cols, index=1)
-        fig = px.bar(
-            df,
-            x=x_axis,
-            y=y_axis,
-            title=f"{y_axis} حسب {x_axis}"
-        )
-        fig.update_traces(marker_color='#4CAF50')
+        y_axis = st.selectbox("اختر المحور Y",
+                               numeric_cols, index=1)
+        fig = px.bar(df, x=x_axis, y=y_axis, title=f"{y_axis} حسب {x_axis}")
+        fig.update_traces(marker_color="#4CAF50")
         st.plotly_chart(fig)
     else:
         st.warning("⚠️ لا توجد أعمدة رقمية كافية.")
 
     if "Month" in df.columns and "Revenue" in df.columns:
         month_order = [
-            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+            "يناير",
+            "فبراير",
+            "مارس",
+            "أبريل",
+            "مايو",
+            "يونيو",
+            "يوليو",
+            "أغسطس",
+            "سبتمبر",
+            "أكتوبر",
+            "نوفمبر",
+            "ديسمبر",
         ]
         df["Month"] = df["Month"].astype(
             CategoricalDtype(categories=month_order, ordered=True)
         )
         df_sorted = df.sort_values("Month")
-        df_sorted["نمو الإيرادات (%)"] = df_sorted["Revenue"].pct_change().fillna(0) * 100
+        df_sorted["نمو الإيرادات (%)"] = (
+            df_sorted["Revenue"].pct_change().fillna(0) * 100
+        )
 
         st.subheader("📉 تحليل النمو الشهري")
         st.line_chart(df_sorted.set_index("Month")[["Revenue", "نمو الإيرادات (%)"]])
@@ -165,17 +175,21 @@ elif page == "📤 التصدير" and df is not None:
             rightMargin=30,
             leftMargin=30,
             topMargin=30,
-            bottomMargin=18
+            bottomMargin=18,
         )
 
-        table = Table(table_data, hAlign='CENTER')
-        table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'Arabic'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
-            ('GRID', (0, 0), (-1, -1), 0.3, colors.black),
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f0f0f0")),
-        ]))
+        table = Table(table_data, hAlign="CENTER")
+        table.setStyle(
+            TableStyle(
+                [
+                    ("FONTNAME", (0, 0), (-1, -1), "Arabic"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("ALIGN", (0, 0), (-1, -1), "RIGHT"),
+                    ("GRID", (0, 0), (-1, -1), 0.3, colors.black),
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f0f0f0")),
+                ]
+            )
+        )
 
         doc.build([table])
         with open(tmp_file.name, "rb") as f:
@@ -184,11 +198,13 @@ elif page == "📤 التصدير" and df is not None:
         return pdf_data
 
     pdf_bytes = dataframe_to_pdf(df)
-    st.download_button("📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf")
+    st.download_button(
+        "📄 تحميل كـ PDF", pdf_bytes, "budget_report.pdf", "application/pdf"
+    )
 
 # ✅ التوقيع الموحد
 st.markdown(
     "<div style='text-align:center; font-size:13px; color:#888; margin-top:50px;'>"
     "💻 <strong>Developed by</strong> | <strong>Ahmed El-tayfy</strong></div>",
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
