@@ -10,9 +10,8 @@ pipeline {
         stage('Code Formatting') {
             steps {
                 echo '🚀 بدء تنسيق الكود باستخدام Black'
-
                 bat 'pip install -q black'
-                bat 'black . || echo "⚠️ بعض الملفات تم تنسيقها تلقائيًا"'
+                bat 'black . > black_output.txt || echo "⚠️ بعض الملفات تم تنسيقها تلقائيًا"'
                 bat 'black --check . || echo "::warning Black formatting needed"'
             }
         }
@@ -21,6 +20,22 @@ pipeline {
             steps {
                 echo '🔧 بدء تنفيذ البناء'
                 bat 'echo Build complete'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo '🧪 تشغيل اختبارات pytest'
+                bat 'pip install -q pytest'
+                bat 'pytest > test_results.txt || echo "::warning Some tests failed"'
+            }
+        }
+
+        stage('Generate PDF Report') {
+            steps {
+                echo '📄 توليد تقرير PDF تلقائي'
+                bat 'pip install -q fpdf'
+                bat 'python generate_report.py'
             }
         }
 
