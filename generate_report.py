@@ -15,7 +15,7 @@ for line in black_lines:
         formatted_files += 1
 
 # تحديد الحالة العامة للتنسيق
-black_status = "✅ التنسيق ناجح" if "All done!" in "".join(black_lines) else "⚠️ تنسيق مطلوب"
+black_status = "✅ ناجح" if "All done!" in "".join(black_lines) else "⚠️ مطلوب"
 
 # معالجة نتائج pytest
 with open("test_results.txt", "r", encoding="utf-8") as f:
@@ -32,7 +32,7 @@ pdf.set_text_color(0, 0, 0)
 
 pdf.ln(5)
 pdf.cell(200, 10, txt=f"📁 حالة التنسيق: {black_status}", ln=True)
-pdf.cell(200, 10, txt=f"📝 عدد الملفات المعاد تنسيقها: {formatted_files}", ln=True)
+pdf.cell(200, 10, txt=f"📝 عدد ملفات معاد تنسيقها: {formatted_files}", ln=True)
 
 duration = round(time.time() - start, 2)
 pdf.cell(200, 10, txt=f"⏱️ مدة تنفيذ التقرير: {duration} ثانية", ln=True)
